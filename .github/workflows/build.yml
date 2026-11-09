@@ -76,7 +76,8 @@ jobs:
         run: |
           set -euo pipefail
           uv python install 3.13 --install-dir pbs
-          PYDIR="$(ls -d pbs/cpython-3.13*)"
+          # The real folder, not uv's cpython-3.13-... shortcut link beside it.
+          PYDIR="$(find pbs -maxdepth 1 -type d -name 'cpython-3.13.*' | head -1)"
           mv "$PYDIR" ScreeningRuntime
           PY=ScreeningRuntime/bin/python3
           "$PY" --version
