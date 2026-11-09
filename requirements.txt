@@ -1,0 +1,10 @@
+# Every library the Balance Check and the Sharps Screening Tool use, in one
+# runtime. Exact versions: the ones verified on a clean Windows runner for the
+# Sharps tool (see its DISTRIBUTION.md), so every machine runs the same code.
+# Wheels only: nothing is ever compiled.
+--only-binary=:all:
+PySide6-Essentials==6.8.2
+numpy==2.5.3
+scipy==1.18.1
+trimesh==5.1.1
+fast_simplification==0.2.0
