@@ -68,7 +68,7 @@ jobs:
           path: ScreeningRuntime-windows-x64.zip
 
   macos:
-    runs-on: macos-14            # Apple Silicon
+    runs-on: macos-latest        # Apple Silicon
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
@@ -99,7 +99,10 @@ jobs:
           path: ScreeningRuntime-macos-arm64.zip
 
   release:
+    # Publishes whichever builds passed: a failed macOS build doesn't hold up
+    # Windows.
     needs: [windows, macos]
+    if: ${{ always() && (needs.windows.result == 'success' || needs.macos.result == 'success') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -112,6 +115,6 @@ jobs:
         run: |
           set -euo pipefail
           gh release delete latest --cleanup-tag -y || true
-          gh release create latest ScreeningRuntime-windows-x64.zip ScreeningRuntime-macos-arm64.zip \
+          gh release create latest ScreeningRuntime-*.zip \
             --title "Screening runtime (latest)" --target "$GITHUB_SHA" \
             --notes "Portable Python with every library the Balance Check and Sharps Screening Tool need. Unzip next to the tools; see the README."
